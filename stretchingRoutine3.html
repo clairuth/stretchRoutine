@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stretching Routine</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            flex-direction: column;
+        }
+        #stretch-container {
+            text-align: center;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+        #stretch-img {
+            max-width: 100%;
+            height: 80vh;
+            object-fit: cover;
+        }
+        #timer {
+            font-size: 3em;
+            margin-top: 10px;
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+        #start-button {
+            font-size: 2em;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <button id="start-button">Start Routine</button>
+    <div id="stretch-container" style="display:none;">
+        <img id="stretch-img" src="skyStretch.jpg" alt="Stretch Image">
+        <div id="timer">60</div>
+    </div>
+
+    <audio id="beep-sound" src="beep.mp3" preload="auto"></audio>
+    <audio id="switch-sound" src="switch.mp3" preload="auto"></audio>
+
+    <script>
+        const images = [
+            {src: 'skyStretch.jpg', duration: 60},
+            {src: 'toeTouch.jpg', duration: 60},
+            {src: 'lungeStretch.jpg', duration: 60, halfwayBeep: true},
+            {src: 'upwardCobra.jpg', duration: 60},
+            {src: 'downwardDog.jpg', duration: 60},
+            {src: 'childBow.jpg', duration: 60},
+            {src: 'betweenLegsToeTouch.jpg', duration: 60},
+            {src: 'skyStretch.jpg', duration: 60}
+        ];
+
+        let currentImageIndex = 0;
+        let timer = 60;
+        const timerElement = document.getElementById('timer');
+        const stretchImgElement = document.getElementById('stretch-img');
+        const beepSound = document.getElementById('beep-sound');
+        const switchSound = document.getElementById('switch-sound');
+        const startButton = document.getElementById('start-button');
+        const stretchContainer = document.getElementById('stretch-container');
+
+        function startRoutine() {
+            stretchContainer.style.display = 'block';
+            startButton.style.display = 'none';
+            setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            timer--;
+            timerElement.textContent = timer;
+
+            if (timer === 0) {
+                switchSound.play();
+                currentImageIndex++;
+                if (currentImageIndex >= images.length) {
+                    currentImageIndex = 0; // Restart the routine
+                }
+                timer = images[currentImageIndex].duration;
+                stretchImgElement.src = images[currentImageIndex].src;
+            }
+
+            if (images[currentImageIndex].halfwayBeep && timer === 30) {
+                beepSound.play();
+            }
+        }
+
+        startButton.addEventListener('click', startRoutine);
+    </script>
+</body>
+</html>
